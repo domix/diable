@@ -205,6 +205,9 @@ public class DIableASTTransformation extends AbstractASTTransformation {
         new ClassExpression(fieldNode.getOwner())
       ));
 
+      System.out.println("Generated code");
+      System.out.println(findValue.getMethodAsString());
+
       initExpr = findValue;
     }
 

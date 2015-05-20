@@ -1,8 +1,5 @@
 package com.domingosuarez.diable;
 
-import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
-
-import java.lang.Throwable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -69,8 +66,13 @@ public class ProviderFactory {
   public static Object findValue(String fieldName, Class parent) {
     Object result = null;
     try {
-      Field field = parent.getDeclaredField(fieldName);
-      result = findValue(field);
+      if (parent != null) {
+        System.out.println("Searching field: " + fieldName + ", on class " + parent.getName());
+        Field field = parent.getDeclaredField(fieldName);
+        result = findValue(field);
+      } else {
+        System.out.println("The parent class is null!!!");
+      }
     } catch (NoSuchFieldException e) {
       e.printStackTrace();
     }
