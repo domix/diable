@@ -1,32 +1,146 @@
-apply plugin: 'idea'
+import java.text.SimpleDateFormat
 
-allprojects {
-  apply plugin: 'java'
-  apply plugin: 'groovy'
-  apply plugin: 'idea'
-
-  group = project.groupId
-
-  sourceCompatibility = project.javaVersion
-  targetCompatibility = project.javaVersion
-
-  dependencies {
-    compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
-    compile 'io.github.lukehutch:fast-classpath-scanner:1.2.3'
-    testCompile "org.spockframework:spock-core:${project.spockVersion}"
-  }
-
-  // Disable the test report for the individual test task
-  test {
-    reports.html.enabled = true
-    // testLogging.showStandardStreams = true
-  }
-
+buildscript {
   repositories {
     jcenter()
   }
-
-  version = project.version
-
+  dependencies {
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+  }
 }
 
+
+plugins {
+  id "com.github.hierynomus.license" version "0.11.0"
+  id 'net.researchgate.release' version '2.0.2'
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+
+
+group = project.groupId
+
+sourceCompatibility = project.javaVersion
+targetCompatibility = project.javaVersion
+
+dependencies {
+  compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
+  compile 'io.github.lukehutch:fast-classpath-scanner:1.2.3'
+  testCompile "org.spockframework:spock-core:${project.spockVersion}"
+}
+
+// Disable the test report for the individual test task
+test {
+  reports.html.enabled = true
+  // testLogging.showStandardStreams = true
+}
+
+repositories {
+  jcenter()
+}
+
+version = project.version
+
+Date buildTimeAndDate = new Date()
+ext {
+  buildDate = new SimpleDateFormat('dd-MMM-yyyy').format(buildTimeAndDate)
+  buildTime = new SimpleDateFormat('hh:mm aa').format(buildTimeAndDate)
+}
+
+def jarManifestAttributes = [
+  'Built-By'  : System.properties['user.name'],
+  'Created-By': System.properties['java.version'] + ' (' + System.properties['java.vendor'] + ' ' + System.getProperty("java.vm.version") + ")",
+  'Build-Date': buildDate,
+  'Build-Time': buildTime]
+
+jar {
+  manifest {
+    attributes(jarManifestAttributes)
+  }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives sourcesJar
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+      artifact sourcesJar
+
+      pom.withXml {
+        def root = asNode()
+        root.appendNode('name', project.name)
+        root.appendNode('description', project.description)
+        root.appendNode('url', 'https://github.com/domix/diable')
+        root.appendNode('inceptionYear', '2015')
+
+        def scm = root.appendNode('scm')
+        scm.appendNode('url', 'https://github.com/domix/diable')
+        scm.appendNode('connection', 'scm:https://domix@github.com/domix/diable.git')
+        scm.appendNode('developerConnection', 'scm:git@github.com:domix/diable.git')
+
+        def license = root.appendNode('licenses').appendNode('license')
+        license.appendNode('name', 'The Apache Software License, Version 2.0')
+        license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+        license.appendNode('distribution', 'repo')
+
+        def developers = root.appendNode('developers')
+        def domix = developers.appendNode('developer')
+        domix.appendNode('id', 'domix')
+        domix.appendNode('name', 'Domingo Suarez Torres')
+        domix.appendNode('email', 'domingo.suarez@gmail.com')
+      }
+    }
+  }
+}
+
+bintray {
+  user = project.hasProperty('bintrayUsername') ? bintrayUsername : ''
+  key = project.hasProperty('bintrayApiKey') ? bintrayApiKey : ''
+
+  publications = ['mavenJava']
+  dryRun = false //Whether to run this as dry-run, without deploying
+  publish = true //If version should be auto published after an upload
+  pkg {
+    repo = 'oss'
+    userOrg = 'domix'
+    name = project.name
+    desc = project.description
+    websiteUrl = 'https://github.com/domix/diable'
+    issueTrackerUrl = 'https://github.com/domix/diable/issues'
+    vcsUrl = 'https://github.com/domix/diable.git'
+    licenses = ['Apache-2.0']
+    labels = ['groovy', 'ast', 'di']
+    publicDownloadNumbers = true
+    attributes = [:]
+    //Optional version descriptor
+    version {
+      name = project.version
+      desc = project.description
+      gpg {
+        sign = project.hasProperty('bintrayGpgPassphrase')
+        passphrase = project.hasProperty('bintrayGpgPassphrase') ? bintrayGpgPassphrase : ''
+      }
+      mavenCentralSync {
+        sync = false
+        user = ''
+        password = ''
+        close = '1'
+      }
+    }
+  }
+}
+
+createReleaseTag.dependsOn bintrayUpload
