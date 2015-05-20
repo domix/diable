@@ -17,7 +17,7 @@ public class ProviderFactory {
   static List<com.domingosuarez.diable.Provider> registry = new ArrayList<>();
 
   static {
-    new FastClasspathScanner().matchClassesImplementing(com.domingosuarez.diable.Provider.class, c -> {
+    /*new FastClasspathScanner().matchClassesImplementing(com.domingosuarez.diable.Provider.class, c -> {
       try {
         System.out.println("Provider found: " + c.getName());
         com.domingosuarez.diable.Provider provider = c.newInstance();
@@ -28,7 +28,7 @@ public class ProviderFactory {
       } catch (IllegalAccessException e) {
         e.printStackTrace();
       }
-    }).scan();
+    }).scan();*/
 
     /*FastClasspathScanner scanner = new FastClasspathScanner("com", "gex");
     scanner.scan();
@@ -52,6 +52,10 @@ public class ProviderFactory {
       }
 
     });*/
+  }
+
+  public static void registerProvider(Provider provider) {
+    registry.add(provider);
   }
 
   public static Provider findProvider(Annotation annotation) {
