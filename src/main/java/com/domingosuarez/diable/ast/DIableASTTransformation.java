@@ -201,12 +201,12 @@ public class DIableASTTransformation extends AbstractASTTransformation {
       fieldExpression.setUseReferenceDirectly(true);
 
       StaticMethodCallExpression findValue = new StaticMethodCallExpression(ClassHelper.make(ProviderFactory.class, false), "findValue", new ArgumentListExpression(
-        fieldExpression,
+        constX(fieldNode.getName()),
         new ClassExpression(fieldNode.getOwner())
       ));
 
       System.out.println("Generated code");
-      System.out.println(findValue.getMethodAsString());
+      System.out.println(findValue.getText());
 
       initExpr = findValue;
     }
