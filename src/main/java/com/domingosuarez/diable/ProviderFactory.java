@@ -2,6 +2,7 @@ package com.domingosuarez.diable;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 
+import java.lang.Throwable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -13,10 +14,10 @@ import static java.util.stream.Stream.of;
  * Created by domix on 18/05/15.
  */
 public class ProviderFactory {
-  static List<Provider> registry = new ArrayList<>();
+  static List<com.domingosuarez.diable.Provider> registry = new ArrayList<>();
 
   static {
-    new FastClasspathScanner().matchClassesImplementing(Provider.class, c -> {
+    /*new FastClasspathScanner().matchClassesImplementing(Provider.class, c -> {
       try {
         Provider provider = c.newInstance();
         registry.add(provider);
@@ -25,7 +26,29 @@ public class ProviderFactory {
       } catch (IllegalAccessException e) {
         e.printStackTrace();
       }
-    }).scan();
+    }).scan();*/
+
+    FastClasspathScanner scanner = new FastClasspathScanner();
+    scanner.scan();
+
+    List<String> classesImplementingProvider = scanner.getClassesImplementing(com.domingosuarez.diable.Provider.class);
+
+    System.out.println(classesImplementingProvider);
+
+    classesImplementingProvider.forEach(providerClass -> {
+      System.out.println("Provider found: " + providerClass);
+      Class classProvider;
+
+      try {
+        classProvider = Class.forName(providerClass);
+        com.domingosuarez.diable.Provider provider = (com.domingosuarez.diable.Provider) classProvider.newInstance();
+        registry.add(provider);
+        System.out.println("Provider registered.");
+      } catch (Throwable exception) {
+        exception.printStackTrace();
+      }
+
+    });
   }
 
   public static Provider findProvider(Annotation annotation) {
