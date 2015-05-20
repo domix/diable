@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Stream.of;
 
@@ -12,44 +13,6 @@ import static java.util.stream.Stream.of;
  */
 public class ProviderFactory {
   static List<com.domingosuarez.diable.Provider> registry = new ArrayList<>();
-
-  static {
-    /*new FastClasspathScanner().matchClassesImplementing(com.domingosuarez.diable.Provider.class, c -> {
-      try {
-        System.out.println("Provider found: " + c.getName());
-        com.domingosuarez.diable.Provider provider = c.newInstance();
-        registry.add(provider);
-        System.out.println("Provider registered.");
-      } catch (InstantiationException e) {
-        e.printStackTrace();
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      }
-    }).scan();*/
-
-    /*FastClasspathScanner scanner = new FastClasspathScanner("com", "gex");
-    scanner.scan();
-
-    List<String> classesImplementingProvider = scanner.getClassesImplementing(com.domingosuarez.diable.Provider.class);
-
-    System.out.println(classesImplementingProvider);
-
-
-    classesImplementingProvider.forEach(providerClass -> {
-      System.out.println("Provider found: " + providerClass);
-      Class classProvider;
-
-      try {
-        classProvider = Class.forName(providerClass);
-        com.domingosuarez.diable.Provider provider = (com.domingosuarez.diable.Provider) classProvider.newInstance();
-        registry.add(provider);
-        System.out.println("Provider registered.");
-      } catch (Throwable exception) {
-        exception.printStackTrace();
-      }
-
-    });*/
-  }
 
   public static void registerProvider(Provider provider) {
     registry.add(provider);
@@ -65,17 +28,25 @@ public class ProviderFactory {
 
   public static Object findValue(String fieldName, Class parent) {
     Object result = null;
-    try {
-      if (parent != null) {
-        System.out.println("Searching field: " + fieldName + ", on class " + parent.getName());
-        Field field = parent.getDeclaredField(fieldName);
-        result = findValue(field);
+
+    if (parent != null) {
+      String className = parent.getName();
+      System.out.println("Searching field: " + fieldName + ", on class " + className);
+
+      Field[] fields = parent.getFields();
+      System.out.println("Fields on class " + className + ": " + fields);
+      Optional<Field> fieldFound = of(fields).filter(field -> field.getName().equals(fieldName)).findFirst();
+
+      if (fieldFound.isPresent()) {
+        result = findValue(fieldFound.get());
       } else {
-        System.out.println("The parent class is null!!!");
+        System.out.println("The field " + fieldName + " was not found on " + className);
       }
-    } catch (NoSuchFieldException e) {
-      e.printStackTrace();
+
+    } else {
+      System.out.println("The parent class is null!!!");
     }
+
     return result;
   }
 
