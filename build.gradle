@@ -1,0 +1,32 @@
+apply plugin: 'idea'
+
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'groovy'
+  apply plugin: 'idea'
+
+  group = project.groupId
+
+  sourceCompatibility = project.javaVersion
+  targetCompatibility = project.javaVersion
+
+  dependencies {
+    compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
+    compile 'io.github.lukehutch:fast-classpath-scanner:1.2.3'
+    testCompile "org.spockframework:spock-core:${project.spockVersion}"
+  }
+
+  // Disable the test report for the individual test task
+  test {
+    reports.html.enabled = true
+    // testLogging.showStandardStreams = true
+  }
+
+  repositories {
+    jcenter()
+  }
+
+  version = project.version
+
+}
+
