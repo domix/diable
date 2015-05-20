@@ -17,23 +17,26 @@ public class ProviderFactory {
   static List<com.domingosuarez.diable.Provider> registry = new ArrayList<>();
 
   static {
-    /*new FastClasspathScanner().matchClassesImplementing(Provider.class, c -> {
+    new FastClasspathScanner().matchClassesImplementing(com.domingosuarez.diable.Provider.class, c -> {
       try {
-        Provider provider = c.newInstance();
+        System.out.println("Provider found: " + c.getName());
+        com.domingosuarez.diable.Provider provider = c.newInstance();
         registry.add(provider);
+        System.out.println("Provider registered.");
       } catch (InstantiationException e) {
         e.printStackTrace();
       } catch (IllegalAccessException e) {
         e.printStackTrace();
       }
-    }).scan();*/
+    }).scan();
 
-    FastClasspathScanner scanner = new FastClasspathScanner();
+    /*FastClasspathScanner scanner = new FastClasspathScanner("com", "gex");
     scanner.scan();
 
     List<String> classesImplementingProvider = scanner.getClassesImplementing(com.domingosuarez.diable.Provider.class);
 
     System.out.println(classesImplementingProvider);
+
 
     classesImplementingProvider.forEach(providerClass -> {
       System.out.println("Provider found: " + providerClass);
@@ -48,7 +51,7 @@ public class ProviderFactory {
         exception.printStackTrace();
       }
 
-    });
+    });*/
   }
 
   public static Provider findProvider(Annotation annotation) {
