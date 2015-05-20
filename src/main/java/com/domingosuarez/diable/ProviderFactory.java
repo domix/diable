@@ -39,7 +39,7 @@ public class ProviderFactory {
   public static Object findValue(String fieldName, Class parent) {
     Object result = null;
     try {
-      Field field = parent.getDeclaredField("foo");
+      Field field = parent.getDeclaredField(fieldName);
       result = findValue(field);
     } catch (NoSuchFieldException e) {
       e.printStackTrace();
