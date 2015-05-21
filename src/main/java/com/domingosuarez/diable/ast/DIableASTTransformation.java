@@ -48,10 +48,8 @@ public class DIableASTTransformation extends AbstractASTTransformation {
     final Expression soft = node.getMember("soft");
     final Expression init = getInitExpr(fieldNode);
 
-    //fieldNode.get
-
-    fieldNode.rename("$" + fieldNode.getName());
-    fieldNode.setModifiers(ACC_PRIVATE | (fieldNode.getModifiers() & (~(ACC_PUBLIC | ACC_PROTECTED))));
+    //fieldNode.rename("$" + fieldNode.getName());
+    //fieldNode.setModifiers(ACC_PRIVATE | (fieldNode.getModifiers() & (~(ACC_PUBLIC | ACC_PROTECTED))));
 
     if (soft instanceof ConstantExpression && ((ConstantExpression) soft).getValue().equals(true)) {
       createSoft(fieldNode, init);
