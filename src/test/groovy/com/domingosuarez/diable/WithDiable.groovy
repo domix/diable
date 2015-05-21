@@ -6,6 +6,6 @@ package com.domingosuarez.diable
 @DIable
 class WithDiable {
 
-  //@Deprecated
+  @Deprecated
   String foo
 }

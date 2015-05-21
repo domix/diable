@@ -15,6 +15,7 @@ import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.codehaus.groovy.ast.ClassHelper.makeWithoutCaching;
 import static org.codehaus.groovy.ast.tools.GeneralUtils.*;
 import static org.codehaus.groovy.control.CompilePhase.SEMANTIC_ANALYSIS;
@@ -26,7 +27,7 @@ import static org.codehaus.groovy.control.CompilePhase.SEMANTIC_ANALYSIS;
 public class DIableASTTransformation extends AbstractASTTransformation {
   private static final ClassNode SOFT_REF = makeWithoutCaching(SoftReference.class, false);
   private static final Expression NULL_EXPR = ConstantExpression.NULL;
-  private static final List<String> INVALID_FIELDS = Arrays.asList("$staticClassInfo", "__$stMC", "metaClass");
+  private static final List<String> ANNOTATIONS_CANDIDATES_FOR_DI = Arrays.asList("org.springframework.beans.factory.annotation.Autowired", "javax.inject.Inject");
 
   @Override
   public void visit(ASTNode[] nodes, SourceUnit source) {
@@ -37,7 +38,14 @@ public class DIableASTTransformation extends AbstractASTTransformation {
     if (parent instanceof ClassNode) {
       List<FieldNode> fields = ((ClassNode) parent).getFields();
       fields.stream().forEach(field -> {
-        if (field.getAnnotations().size() > 0) {
+
+        List<String> annotationClassses = field.getAnnotations().stream()
+          .map(anno -> anno.getClassNode().getTypeClass().getName())
+          .collect(toList());
+
+        boolean isCandidateForDI = ANNOTATIONS_CANDIDATES_FOR_DI.stream().anyMatch(str -> annotationClassses.contains(str));
+
+        if (isCandidateForDI) {
           visitField(node, field);
         }
       });
@@ -191,9 +199,8 @@ public class DIableASTTransformation extends AbstractASTTransformation {
     Expression initExpr = fieldNode.getInitialValueExpression();
     fieldNode.setInitialValueExpression(null);
 
-    boolean isInvalidField = INVALID_FIELDS.stream().anyMatch(str -> str.equals(fieldNode.getName()));
 
-    if (initExpr == null && !isInvalidField) {
+    if (initExpr == null) {
 
       FieldExpression fieldExpression = new FieldExpression(fieldNode);
       fieldExpression.setUseReferenceDirectly(true);
@@ -202,9 +209,6 @@ public class DIableASTTransformation extends AbstractASTTransformation {
         constX(fieldNode.getName()),
         new ClassExpression(fieldNode.getOwner())
       ));
-
-      System.out.println("Generated code");
-      System.out.println(findValue.getText());
 
       initExpr = findValue;
     }

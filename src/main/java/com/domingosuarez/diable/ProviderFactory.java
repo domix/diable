@@ -30,31 +30,13 @@ public class ProviderFactory {
     Object result = null;
 
     if (parent != null) {
-      String className = parent.getName();
-
-      System.out.println("Searching field: " + fieldName + ", on class " + className);
-
       Field[] fields = parent.getDeclaredFields();
 
-      StringBuilder sb = new StringBuilder();
-      for (Field field : fields) {
-        //field.setAccessible(true);
-
-        sb.append("field: ").append(field).append("\n");
-
-      }
-      System.out.println("Fields on class " + className + "\n" + sb.toString());
       Optional<Field> fieldFound = of(fields).filter(field -> field.getName().equals("$" + fieldName)).findFirst();
 
       if (fieldFound.isPresent()) {
-        System.out.println("The field " + fieldName + " was found on " + className);
         result = findValue(fieldFound.get());
-      } else {
-        System.out.println("The field " + fieldName + " was not found on " + className);
       }
-
-    } else {
-      System.out.println("The parent class is null!!!");
     }
 
     return result;
