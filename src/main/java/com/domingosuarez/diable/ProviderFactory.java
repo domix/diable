@@ -44,7 +44,7 @@ public class ProviderFactory {
 
       }
       System.out.println("Fields on class " + className + "\n" + sb.toString());
-      Optional<Field> fieldFound = of(fields).filter(field -> field.getName().equals(fieldName)).findFirst();
+      Optional<Field> fieldFound = of(fields).filter(field -> field.getName().equals("$" + fieldName)).findFirst();
 
       if (fieldFound.isPresent()) {
         System.out.println("The field " + fieldName + " was found on " + className);
