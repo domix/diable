@@ -1,7 +1,6 @@
 package com.domingosuarez.diable
 
 import com.domingosuarez.diable.provider.FooProvider
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.lang.reflect.Field
@@ -37,8 +36,13 @@ class SomeFuckingSpec extends Specification {
       Class<?> c = book.getClass();
 
       Field chap = c.getDeclaredField("foo");
+      println "field: ${chap}"
       def value = ProviderFactory.findValue(chap)
-      println value
+      println "value: ${value}"
+
+      def value1 = ProviderFactory.findValue("foo", c)
+
+      println "value1: ${value1?.dump()}"
     then:
 
       println chap.dump()
