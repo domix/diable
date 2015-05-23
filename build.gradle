@@ -14,13 +14,11 @@ plugins {
   id 'net.researchgate.release' version '2.0.2'
 }
 
-apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-
-
+apply plugin: 'jacoco'
 
 group = project.groupId
 
@@ -29,14 +27,7 @@ targetCompatibility = project.javaVersion
 
 dependencies {
   compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
-  compile 'io.github.lukehutch:fast-classpath-scanner:1.2.3'
   testCompile "org.spockframework:spock-core:${project.spockVersion}"
-}
-
-// Disable the test report for the individual test task
-test {
-  reports.html.enabled = true
-  // testLogging.showStandardStreams = true
 }
 
 repositories {
@@ -139,6 +130,13 @@ bintray {
         close = '1'
       }
     }
+  }
+}
+
+jacocoTestReport {
+  reports {
+    xml.enabled = true // coveralls plugin depends on xml format report
+    html.enabled = true
   }
 }
 

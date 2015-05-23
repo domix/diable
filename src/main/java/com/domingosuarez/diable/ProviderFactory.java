@@ -4,8 +4,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.of;
 
 /**
@@ -27,19 +29,22 @@ public class ProviderFactory {
 
 
   public static Object findValue(String fieldName, Class parent) {
-    Object result = null;
+    return ofNullable(parent)
+      .map(clazz -> asList(clazz.getDeclaredFields()).stream())
+      .map(f -> getField(fieldName, f))
+      .map(ProviderFactory::findValue)
+      .orElse(null);
+  }
 
-    if (parent != null) {
-      Field[] fields = parent.getDeclaredFields();
+  private static Field getField(String fieldName, Stream<Field> f) {
+    return f
+      .filter(field -> field.getName().equals(getFieldName(fieldName)))
+      .findFirst()
+      .orElse(null);
+  }
 
-      Optional<Field> fieldFound = of(fields).filter(field -> field.getName().equals("$" + fieldName)).findFirst();
-
-      if (fieldFound.isPresent()) {
-        result = findValue(fieldFound.get());
-      }
-    }
-
-    return result;
+  private static String getFieldName(String fieldName) {
+    return "$" + ofNullable(fieldName).orElse("");
   }
 
   public static Object findValue(Field field) {
@@ -47,8 +52,12 @@ public class ProviderFactory {
       .map(ProviderFactory::findProvider)
       .filter(provider -> provider != null)
       .findFirst()
-      .orElseGet(() -> new NullProvider())
+      .orElseGet(ProviderFactory::getNullProvider)
       .get(field.getType(), field.getName());
+  }
+
+  private static NullProvider getNullProvider() {
+    return new NullProvider();
   }
 
 
