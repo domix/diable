@@ -6,6 +6,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.9'
   }
 }
 
@@ -19,6 +20,7 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'jacoco'
+apply plugin: 'com.github.ben-manes.versions'
 
 group = project.groupId
 
