@@ -13,4 +13,4 @@ env:
 - TERM=dumb
 
 script:
-- ./gradlew test jacocoTestReport 
+- ./gradlew test jacocoTestReport coveralls
