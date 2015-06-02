@@ -115,7 +115,8 @@ public class DIableASTTransformation extends AbstractASTTransformation {
 
   private static void addNonThreadSafeBody(BlockStatement body, FieldNode fieldNode, Expression initExpr) {
     final Expression fieldExpr = varX(fieldNode);
-    body.addStatement(ifElseS(notNullX(fieldExpr), stmt(fieldExpr), assignS(fieldExpr, initExpr)));
+    //body.addStatement(ifElseS(notNullX(fieldExpr), stmt(fieldExpr), assignS(fieldExpr, initExpr)));
+    body.addStatement(assignS(fieldExpr, initExpr));
   }
 
   private static void addMethod(FieldNode fieldNode, BlockStatement body, ClassNode type) {
