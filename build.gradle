@@ -13,7 +13,7 @@ buildscript {
 
 
 plugins {
-  id 'net.researchgate.release' version '2.1.1'
+  id 'net.researchgate.release' version '2.1.2'
 }
 
 apply plugin: 'groovy'
