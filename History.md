@@ -1,4 +1,9 @@
 
+0.1.15 / 2015-06-17
+==================
+
+  * added springloaded, removed all runtime deps from the final pom
+
 0.1.14 / 2015-06-16
 ==================
 
