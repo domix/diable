@@ -31,6 +31,7 @@ targetCompatibility = project.javaVersion
 
 dependencies {
   compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
+  compile 'org.springframework:springloaded:1.2.3.RELEASE'
   testCompile "org.spockframework:spock-core:${project.spockVersion}"
 }
 
@@ -71,6 +72,9 @@ publishing {
   publications {
     mavenJava(MavenPublication) {
       from components.java
+
+      it.pom.getRuntimeDependencies().clear()
+      
       artifact sourcesJar
 
       pom.withXml {
