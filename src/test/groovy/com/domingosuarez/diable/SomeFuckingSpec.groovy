@@ -1,6 +1,7 @@
 package com.domingosuarez.diable
 
 import com.domingosuarez.diable.provider.FooProvider
+import com.domingosuarez.diable.provider.FooProviderImpl
 import spock.lang.Specification
 
 import java.lang.reflect.Field
@@ -33,9 +34,9 @@ class SomeFuckingSpec extends Specification {
       //def value = ProviderFactory.findValue(field)
       def book = new AClass()
 
-      Class<?> c = book.getClass();
+      Class<?> c = book.getClass() ;
 
-      Field chap = c.getDeclaredField("foo");
+      Field chap = c.getDeclaredField("foo") ;
       println "field: ${chap}"
       def value = ProviderFactory.findValue(chap)
       println "value: ${value}"
@@ -58,6 +59,52 @@ class SomeFuckingSpec extends Specification {
 
         clazz.getDeclaredField(it.key)
       }*/
+  }
+
+  def 'Should modify constructor'() {
+    setup:
+      ProviderFactory.registry = new ArrayList<Provider>()
+      ProviderFactory.registerProvider(new FooProviderImpl())
+    when:
+      WithDiable withDiable = new WithDiable()
+    then:
+      withDiable != null
+      withDiable.map == FooProviderImpl.testMap
+  }
+
+  def 'Should create object even if there is no provider'() {
+    setup:
+      ProviderFactory.registry = new ArrayList<Provider>()
+    when:
+      WithDiable withDiable = new WithDiable()
+    then:
+      withDiable != null
+      withDiable.map == null
+  }
+
+  def 'Should modify existing constructor with no parameter'() {
+    setup:
+      ProviderFactory.registry = new ArrayList<Provider>()
+      ProviderFactory.registerProvider(new FooProviderImpl())
+    when:
+      WithDiableAndConstructors diabled = new WithDiableAndConstructors()
+    then:
+      diabled != null
+      diabled.name == 'BASE CONSTRUCTOR'
+      diabled.map == FooProviderImpl.testMap
+  }
+
+  def 'Should modify existing constructor with parameter'() {
+    setup:
+      ProviderFactory.registry = new ArrayList<Provider>()
+      ProviderFactory.registerProvider(new FooProviderImpl())
+      String name = "OTHER NAME"
+    when:
+      WithDiableAndConstructors diabled = new WithDiableAndConstructors(name)
+    then:
+      diabled != null
+      diabled.name == name
+      diabled.map == FooProviderImpl.testMap
   }
 }
 
