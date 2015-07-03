@@ -7,10 +7,12 @@ package com.domingosuarez.diable
 class WithDiableAndConstructors {
   String name
   Map<String, String> map
-  public WithDiableAndConstructors(){
+
+  public WithDiableAndConstructors() {
     this.name = 'BASE CONSTRUCTOR'
   }
-  public WithDiableAndConstructors(String name){
+
+  public WithDiableAndConstructors(String name) {
     this.name = name
   }
 }

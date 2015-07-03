@@ -11,9 +11,6 @@ import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.codehaus.groovy.ast.ClassHelper.make;
 import static org.codehaus.groovy.ast.tools.GeneralUtils.varX;
 import static org.codehaus.groovy.control.CompilePhase.SEMANTIC_ANALYSIS;
@@ -43,7 +40,7 @@ public class DIableASTTransformationV2 extends AbstractASTTransformation {
     if (constructorsSize == 0) {
       cNode.addConstructor(createConstructor());
     } else {
-      for(int i = 0;i<constructorsSize; i++){
+      for (int i = 0; i < constructorsSize; i++) {
         updateConstructor(cNode.getDeclaredConstructors().get(i));
       }
     }
@@ -55,7 +52,8 @@ public class DIableASTTransformationV2 extends AbstractASTTransformation {
     ConstructorNode constructorNode = new ConstructorNode(ACC_PUBLIC, constructorBody);
     return constructorNode;
   }
-  public static void updateConstructor(ConstructorNode constructorNode){
+
+  public static void updateConstructor(ConstructorNode constructorNode) {
     BlockStatement methodBody = new BlockStatement();
     methodBody.addStatement(constructorNode.getCode());
     methodBody.addStatement(assignWiredStatement());

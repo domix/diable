@@ -23,7 +23,7 @@ public class FooProviderImpl implements Provider {
   public void wire(Object instance) {
     if (instance instanceof WithDiable) {
       ((WithDiable) instance).setMap(getTestMap());
-    }else if(instance instanceof WithDiableAndConstructors){
+    } else if (instance instanceof WithDiableAndConstructors) {
       ((WithDiableAndConstructors) instance).setMap(getTestMap());
     }
   }
@@ -32,7 +32,8 @@ public class FooProviderImpl implements Provider {
   public Boolean supports(Annotation annotation) {
     return FooProvider.class.isAssignableFrom(annotation.annotationType());
   }
-  public static Map<String,String > getTestMap(){
+
+  public static Map<String, String> getTestMap() {
     return new HashMap<String, String>() {{
       put("one", "1");
       put("two", "2");
