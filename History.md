@@ -1,4 +1,10 @@
 
+0.2.0 / 2015-07-07
+==================
+
+  * Modified Diable utility classes to use new implementation
+  * New implementation of AST Transformation using constructor
+
 0.1.15 / 2015-06-17
 ==================
 
