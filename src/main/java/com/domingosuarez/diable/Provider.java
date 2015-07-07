@@ -7,6 +7,7 @@ import java.lang.annotation.Annotation;
  */
 public interface Provider {
   <T> T get(Class<T> type, String name);
+  void wire(Object instance);
 
   Boolean supports(Annotation annotation);
 }

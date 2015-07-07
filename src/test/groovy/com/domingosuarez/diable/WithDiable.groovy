@@ -8,4 +8,7 @@ class WithDiable {
 
   @Deprecated
   String foo
+
+  @Deprecated
+  Map<String, String> map
 }

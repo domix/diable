@@ -55,6 +55,9 @@ public class ProviderFactory {
       .orElseGet(ProviderFactory::getNullProvider)
       .get(field.getType(), field.getName());
   }
+  public static void wire(Object object){
+    registry.stream().findFirst().ifPresent(provider -> provider.wire(object));
+  }
 
   private static NullProvider getNullProvider() {
     return new NullProvider();
@@ -66,6 +69,11 @@ public class ProviderFactory {
     @Override
     public <T> T get(Class<T> type, String name) {
       return null;
+    }
+
+    @Override
+    public void wire(Object instance) {
+
     }
 
     @Override

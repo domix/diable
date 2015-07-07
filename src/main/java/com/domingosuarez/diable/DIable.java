@@ -1,6 +1,7 @@
 package com.domingosuarez.diable;
 
 import com.domingosuarez.diable.ast.DIableASTTransformation;
+import com.domingosuarez.diable.ast.DIableASTTransformationV2;
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 
 import java.lang.annotation.Documented;
@@ -17,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @Documented
 @Retention(SOURCE)
 @Target(TYPE)
-@GroovyASTTransformationClass(classes = DIableASTTransformation.class)
+@GroovyASTTransformationClass(classes = DIableASTTransformationV2.class)
 @interface DIable {
 
 }
