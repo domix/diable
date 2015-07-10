@@ -19,9 +19,9 @@ import static org.codehaus.groovy.control.CompilePhase.SEMANTIC_ANALYSIS;
  * Created by angelpimentel on 7/2/15.
  */
 @GroovyASTTransformation(phase = SEMANTIC_ANALYSIS)
-public class DIableASTTransformationV2 extends AbstractASTTransformation {
+public class DIableConstructorWiringASTTransformation extends AbstractASTTransformation {
 
-  static final Class MY_CLASS = DIableASTTransformationV2.class;
+  static final Class MY_CLASS = DIableConstructorWiringASTTransformation.class;
   static final ClassNode MY_TYPE = make(MY_CLASS);
   static final String MY_TYPE_NAME = "@" + MY_TYPE.getNameWithoutPackage();
 
