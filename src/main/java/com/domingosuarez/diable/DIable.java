@@ -18,6 +18,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @Retention(SOURCE)
 @Target(TYPE)
 @GroovyASTTransformationClass(classes = DIableConstructorWiringASTTransformation.class)
-@interface DIable {
+public @interface DIable {
 
 }
